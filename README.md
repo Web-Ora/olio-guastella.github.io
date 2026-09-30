@@ -1,56 +1,80 @@
-# Oleificio Guastella — static export (webv2)
+# Oleificio Guastella — portable static export (webv3)
 
-This is a **generated, static-HTML copy of `webv1/`**, for hosting on GitHub
-Pages (which can't run PHP). Don't hand-edit the `.html` files here — edit
-the source in `webv1/` (the PHP templates and `content/it.php`) and
-re-generate this folder instead, or your edits will be lost/out of sync
-next time someone regenerates it.
+Same site as `webv2/`, rebuilt to fix two real problems `webv2` had:
+
+1. **Opening the file directly (`file://`) showed unstyled text.** `webv2`
+   linked CSS/JS/images with absolute paths (`/assets/...`), which only
+   resolve correctly when a real web server is serving the site from its
+   domain root. Opened as a local file, or hosted at a GitHub Pages
+   *project* URL like `https://<username>.github.io/<repo>/`, those paths
+   pointed at the wrong place entirely — hence "only basic text."
+2. **GitHub Pages project pages showed no styling either**, for the exact
+   same reason — `/assets/...` resolved to
+   `https://<username>.github.io/assets/...` (missing the `/<repo>/`
+   prefix), not the actual asset location.
+
+`webv3` uses **relative paths everywhere** instead, so it works:
+- opened straight from disk by double-clicking `index.html`, no server at all,
+- on GitHub Pages at the repo root or a custom domain,
+- on GitHub Pages at a project subpath (`username.github.io/reponame/`),
+- moved to any other static host, at any subpath.
+
+**The tradeoff:** because it needs to work from a plain double-clicked
+file too, pages are flat files with `.html` extensions
+(`site.com/azienda.html`) instead of the clean extension-less URLs
+`webv1`/`webv2` use (`site.com/azienda`). That's a deliberate, necessary
+trade for "just works everywhere, no server config" — plain `file://`
+browsing can't run the server-side rewrite that makes clean URLs possible.
+
+Don't hand-edit the `.html` files — edit `webv1/` (the PHP source) and
+regenerate, same as `webv2`. To regenerate:
+
+```bash
+cd webv1
+php -f index.php    > ../webv3/index.html
+php -f azienda.php  > ../webv3/azienda.html
+php -f olio.php     > ../webv3/olio.html
+php -f contatti.php > ../webv3/contatti.html
+cd ../webv3
+python3 - <<'EOF'
+import pathlib
+for fname in ["index.html","azienda.html","olio.html","contatti.html"]:
+    p = pathlib.Path(fname)
+    html = p.read_text(encoding="utf-8")
+    html = html.replace('href="/assets/', 'href="assets/')
+    html = html.replace('src="/assets/', 'src="assets/')
+    html = html.replace("url('/assets/", "url('assets/")
+    html = html.replace('url("/assets/', 'url("assets/')
+    html = html.replace('href="/"', 'href="index.html"')
+    html = html.replace('href="/azienda"', 'href="azienda.html"')
+    html = html.replace('href="/olio"', 'href="olio.html"')
+    html = html.replace('href="/contatti"', 'href="contatti.html"')
+    html = html.replace('href="https://olioguastella.com/azienda"', 'href="https://olioguastella.com/azienda.html"')
+    html = html.replace('href="https://olioguastella.com/olio"', 'href="https://olioguastella.com/olio.html"')
+    html = html.replace('href="https://olioguastella.com/contatti"', 'href="https://olioguastella.com/contatti.html"')
+    p.write_text(html, encoding="utf-8")
+EOF
+rm -rf assets && cp -r ../webv1/assets .
+cp ../webv1/robots.txt .
+```
 
 ## Publishing on GitHub Pages
 
-1. Push this repository to GitHub.
-2. In the repo's **Settings → Pages**, set the source to the branch you
-   pushed, folder `/webv2`.
-3. **Domain:** every page here has its `<link rel="canonical">`,
-   `hreflang`, and Open Graph tags hardcoded to `https://olioguastella.com`
-   (matching the real site). Two ways to use that:
-   - **You're pointing your real domain at this Pages site** — add a
-     `CNAME` file in this folder containing exactly `olioguastella.com`,
-     and configure the DNS records GitHub's Pages settings show you. This
-     is the setup these baked-in URLs assume.
-   - **You're just previewing at `https://<username>.github.io/<repo>/`**
-     — that's fine for looking at it, but the canonical/hreflang/OG tags
-     will point at the wrong domain until you either add the CNAME above
-     or ask for the export to be regenerated with the github.io path
-     baked in instead.
+Settings → Pages → source = this branch, folder `/webv3`. No further
+configuration needed — that's the whole point of this export. If you're
+pointing a real domain at it, add a `CNAME` file here containing that
+domain (e.g. `olioguastella.com`); `sitemap.xml`'s URLs assume that domain
+either way, so update them (find-and-replace `olioguastella.com`) if
+you're using a different one, or just delete `sitemap.xml` if you're only
+using this as a quick preview.
 
-## Structure
+## Verified working
 
-Clean URLs are directories with an `index.html` inside (`azienda/index.html`
-is served at `/azienda`), the same convention `webv1`'s `.htaccess` uses —
-this needs no server configuration on GitHub Pages, it's standard static
-directory-index behavior. `.nojekyll` is present so GitHub doesn't run its
-Jekyll processor over these files (not needed, and would just slow down
-every deploy).
+- Opened directly via `file://` (no server) — CSS, fonts, hero background
+  photos, and every product/section image load correctly; screenshotted at
+  desktop, tablet (768px) and mobile (375px) widths.
+- Served from a simulated GitHub Pages project subpath
+  (`/somerepo/azienda.html`) — same result, nothing broken.
 
-English, French and German aren't included here — same as `webv1`, they're
-not translated yet (see `webv1/README.md` §4). Once they are, regenerate
-this export to pick them up.
-
-## Regenerating after a change to webv1/
-
-From the repository root:
-
-```bash
-rm -rf webv2/azienda webv2/olio webv2/contatti webv2/index.html
-mkdir -p webv2/azienda webv2/olio webv2/contatti
-cd webv1
-php -f index.php    > ../webv2/index.html
-php -f azienda.php  > ../webv2/azienda/index.html
-php -f olio.php     > ../webv2/olio/index.html
-php -f contatti.php > ../webv2/contatti/index.html
-cd ..
-rm -rf webv2/assets
-cp -r webv1/assets webv2/assets
-cp webv1/robots.txt webv1/sitemap.xml webv2/
-```
+English, French and German aren't included, same as `webv1`/`webv2` —
+not translated yet.

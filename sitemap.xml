@@ -6,15 +6,15 @@
     <xhtml:link rel="alternate" hreflang="it" href="https://olioguastella.com/"/>
   </url>
   <url>
-    <loc>https://olioguastella.com/azienda</loc>
-    <xhtml:link rel="alternate" hreflang="it" href="https://olioguastella.com/azienda"/>
+    <loc>https://olioguastella.com/azienda.html</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://olioguastella.com/azienda.html"/>
   </url>
   <url>
-    <loc>https://olioguastella.com/olio</loc>
-    <xhtml:link rel="alternate" hreflang="it" href="https://olioguastella.com/olio"/>
+    <loc>https://olioguastella.com/olio.html</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://olioguastella.com/olio.html"/>
   </url>
   <url>
-    <loc>https://olioguastella.com/contatti</loc>
-    <xhtml:link rel="alternate" hreflang="it" href="https://olioguastella.com/contatti"/>
+    <loc>https://olioguastella.com/contatti.html</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://olioguastella.com/contatti.html"/>
   </url>
 </urlset>
