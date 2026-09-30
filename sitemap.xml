@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://olioguastella.com/</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://olioguastella.com/"/>
+  </url>
+  <url>
+    <loc>https://olioguastella.com/azienda</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://olioguastella.com/azienda"/>
+  </url>
+  <url>
+    <loc>https://olioguastella.com/olio</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://olioguastella.com/olio"/>
+  </url>
+  <url>
+    <loc>https://olioguastella.com/contatti</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://olioguastella.com/contatti"/>
+  </url>
+</urlset>
